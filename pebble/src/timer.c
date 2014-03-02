@@ -22,6 +22,7 @@ void timer_start(Timer* timer) {
   timer->time_left = timer->length;
   timer->status = TIMER_STATUS_RUNNING;
   timer_set_app_timer(timer);
+  vibes_short_pulse();
 }
 
 void timer_pause(Timer* timer) {
@@ -48,6 +49,7 @@ void timer_tick(Timer* timer) {
   if (timer->status != TIMER_STATUS_RUNNING) { return; }
   if (timer->direction == TIMER_DIRECTION_DOWN) {
     timer->time_left -= 1;
+    //APP_LOG(APP_LOG_LEVEL_DEBUG, "tl %d", timer->time_left);
     if (timer->time_left <= 0) {
       timer_finished(timer);
     }
@@ -205,6 +207,9 @@ static void timer_callback(void* data) {
       timer->time_left -= 1;
       if (timer->time_left == 0) {
         timer_finished(timer);
+      }
+      else if (timer->time_left == 30 || timer->time_left == 10){
+        vibes_short_pulse();
       }
     break;
   }
